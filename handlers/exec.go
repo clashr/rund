@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"os"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -27,16 +28,19 @@ func executeRequest(r api.RunRequest) (*api.RunResponse, error) {
 		if err := c.Destroy(); err != nil {
 			logrus.Error("cannot destroy: %s", err)
 		}
+		os.RemoveAll(c.Config().Rootfs)
 	}()
 
 	wd := c.Config().Rootfs
 
 	if r.RootfsUri != "" {
+		logrus.Infof("retrieving rootfs from %s", r.RootfsUri)
 		if err := download(r.RootfsUri, wd); err != nil {
 			return nil, err
 		}
 	}
 	if r.BinUri != "" {
+		logrus.Infof("retrieving bin from %s", r.BinUri)
 		if err := download(r.BinUri, wd); err != nil {
 			return nil, err
 		}

@@ -49,7 +49,7 @@ func MainController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logrus.Info("received good request")
+	logrus.Infof("received good request %+v", runRequest)
 	result, err := executeRequest(runRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
